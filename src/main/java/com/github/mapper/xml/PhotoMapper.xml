@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.github.mapper.PhotoMapper">
+
+	<resultMap id="BaseResultMap" type="com.github.model.Photo">
+        <result property="id" column="id"/>
+        <result property="typeId" column="type_id"/>
+        <result property="name" column="name"/>
+        <result property="author" column="author"/>
+        <result property="orderNum" column="order_num"/>
+        <result property="thumbnail" column="thumbnail"/>
+        <result property="path" column="path"/>
+        <result property="createTime" column="create_time"/>
+        <result property="description" column="description"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="com.github.mapper.PhotoMapper.columns">
+	    <![CDATA[
+		id, type_id, name, author, order_num, thumbnail, path, create_time, description
+	    ]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="add" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[
+        INSERT INTO t_photo (
+        	id, 
+        	type_id, 
+        	name, 
+        	author, 
+        	order_num, 
+        	thumbnail, 
+        	path, 
+        	create_time, 
+        	description
+        ) VALUES (
+        	#{id}, 
+        	#{typeId}, 
+        	#{name}, 
+        	#{author}, 
+        	#{orderNum}, 
+        	#{thumbnail}, 
+        	#{path}, 
+        	#{createTime}, 
+        	#{description}
+        )
+    ]]>
+	</insert>
+    
+	<update id="update" >
+    <![CDATA[
+        UPDATE t_photo SET
+	        type_id = #{typeId}, 
+	        name = #{name}, 
+	        author = #{author}, 
+	        order_num = #{orderNum}, 
+	        thumbnail = #{thumbnail}, 
+	        path = #{path}, 
+	        create_time = #{createTime}, 
+	        description = #{description}
+        WHERE 
+	        id = #{id} 
+    ]]>
+	</update>
+
+    <delete id="delete">
+    <![CDATA[
+        DELETE FROM t_photo WHERE
+        id = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="get" resultMap="BaseResultMap">
+		SELECT <include refid="com.github.mapper.PhotoMapper.columns" />
+	    <![CDATA[
+		    FROM t_photo 
+	        WHERE 
+		        id = #{id} 
+	    ]]>
+	</select>
+
+</mapper>
