@@ -37,6 +37,10 @@
 package com.github.service;
 
 import javax.annotation.Resource;
+
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import com.github.model.Photo;
 import com.github.mapper.PhotoMapper;
@@ -47,16 +51,25 @@ public class PhotoService {
 
     @Resource private PhotoMapper photoMapper;
 
-    private void add(Photo photo) {
+    public void add(Photo photo) {
         this.photoMapper.add(photo);
     }
-    private void delete(Integer id) {
+
+    /** 删除 */
+    @CacheEvict(value="objectCache", key="(#root.targetClass.getSimpleName()).concat(':id:').concat(#id)")
+    public void delete(Integer id) {
         this.photoMapper.delete(id);
     }
-    private void update(Photo photo) {
+
+    /** 修改 */
+    @CachePut(value="objectCache", key="(#root.targetClass.getSimpleName()).concat(':id:').concat(#photo.id)")
+    public void update(Photo photo) {
         this.photoMapper.update(photo);
     }
-    private Photo get(Integer id) {
+
+    /** 查看 - 从Cache中获取对象 */
+    @Cacheable(value="objectCache", key="(#root.targetClass.getSimpleName()).concat(':id:').concat(#id)")
+    public Photo get(Integer id) {
         return this.photoMapper.get(id);
     }
 	/* --------------------------------------------------- */

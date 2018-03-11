@@ -63,6 +63,7 @@
     <logger name="org.springframework.beans.factory.xml" level="INFO"/>
     <logger name="org.springframework.beans.factory.xml.PluggableSchemaResolver" level="INFO"/>
     <logger name="org.springframework.beans.TypeConverterDelegate" level="INFO"/>
+    <logger name="org.springframework.cache.interceptor.CacheInterceptor" level="TRACE"/>
     <logger name="org.springframework.cache.annotation.AnnotationCacheOperationSource" level="INFO"/>
     <logger name="org.springframework.context.annotation.ConfigurationClassEnhancer" level="INFO"/>
     <logger name="org.springframework.context.annotation.ConfigurationClassPostProcessor" level="INFO"/>
@@ -141,3 +142,8 @@
         <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>
+
+
+
+
+
