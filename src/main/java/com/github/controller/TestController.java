@@ -1,6 +1,7 @@
 package com.github.controller;
 
 import com.github.model.Photo;
+import com.github.pagehelper.PageHelper;
 import com.github.service.PhotoService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 
 @Controller
@@ -36,6 +38,16 @@ public class TestController {
 		photoService.get(photo.getId());
 
 		return "success";
+	}
+
+	@ResponseBody
+	@GetMapping("page")
+	public Object page() {
+
+		PageHelper.startPage(1, 2);
+		List<Photo> photoList = photoService.getList();
+
+		return photoList;
 	}
 
 }

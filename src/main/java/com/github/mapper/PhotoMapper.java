@@ -36,6 +36,7 @@
  */
 package com.github.mapper;
 
+import java.util.List;
 import com.github.model.Photo;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
@@ -49,6 +50,7 @@ public interface PhotoMapper {
 	void delete(Integer id);
 	void update(Photo photo);
 	Photo get(Integer id);
+	List<Photo> getList();
+	List<Photo> getPhotoList(Photo photo);
 	/* --------------------------------------------------- */
-
 }
