@@ -3,6 +3,8 @@ package com.github.util;
 import com.alibaba.druid.filter.logging.LogFilter;
 import com.alibaba.druid.filter.logging.Slf4jLogFilter;
 import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.wall.WallConfig;
+import com.alibaba.druid.wall.WallFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -31,6 +33,24 @@ public class DruidConfig {
 		slf4jLogFilter.setStatementSqlFormatOption(new SQLUtils.FormatOption(true, true));
 
 		return slf4jLogFilter;
+	}
+
+	/**
+	 * SQL 防火墙配置, 防止SQL注入
+	 * */
+	@Bean
+	public WallFilter wallFilter() {
+
+		WallConfig wallConfig = new WallConfig();
+		wallConfig.setMultiStatementAllow(true); //允许一次执行多条语句
+		wallConfig.setNoneBaseStatementAllow(true); //允许非基本语句的其他语句
+		wallConfig.setDeleteWhereNoneCheck(true);
+		wallConfig.setUpdateWhereNoneCheck(true);
+
+		WallFilter wallFilter = new WallFilter();
+		wallFilter.setConfig(wallConfig);
+
+		return wallFilter;
 	}
 }
 
