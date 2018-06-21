@@ -41,46 +41,34 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-public class Photo {
+public class SystemConfig {
 	
 	//alias
-	public static final String TABLE_ALIAS = "Photo";
-	public static final String ALIAS_ID = "主键";
-	public static final String ALIAS_TYPE_ID = "类型主键";
+	public static final String TABLE_ALIAS = "SystemConfig";
+	public static final String ALIAS_ID = "id";
 	public static final String ALIAS_NAME = "名称";
-	public static final String ALIAS_AUTHOR = "author";
-	public static final String ALIAS_ORDER_NUM = "排序";
-	public static final String ALIAS_THUMBNAIL = "缩略图";
-	public static final String ALIAS_PATH = "图片地址";
-	public static final String ALIAS_CREATE_TIME = "时间";
+	public static final String ALIAS_CODE = "代码";
+	public static final String ALIAS_VALUE = "值";
 	public static final String ALIAS_DESCRIPTION = "描述";
 	
 	
 	//columns START
-	/** 主键   db_column: id */ 	
+	/** id   db_column: id */ 	
 	private Integer id;
-	/** 类型主键   db_column: type_id */ 	
-	private Integer typeId;
 	/** 名称   db_column: name */ 	
 	private String name;
-	/** author   db_column: author */ 	
-	private String author;
-	/** 排序   db_column: order_num */ 	
-	private Integer orderNum;
-	/** 缩略图   db_column: thumbnail */ 	
-	private String thumbnail;
-	/** 图片地址   db_column: path */ 	
-	private String path;
-	/** 时间   db_column: create_time */ 	
-	private java.util.Date createTime;
+	/** 代码   db_column: code */ 	
+	private String code;
+	/** 值   db_column: value */ 	
+	private String value;
 	/** 描述   db_column: description */ 	
 	private String description;
 	//columns END
 
-	public Photo(){
+	public SystemConfig(){
 	}
 
-	public Photo(
+	public SystemConfig(
 		Integer id
 	){
 		this.id = id;
@@ -92,47 +80,23 @@ public class Photo {
 	public Integer getId() {
 		return this.id;
 	}
-	public void setTypeId(Integer value) {
-		this.typeId = value;
-	}
-	public Integer getTypeId() {
-		return this.typeId;
-	}
 	public void setName(String value) {
 		this.name = value;
 	}
 	public String getName() {
 		return this.name;
 	}
-	public void setAuthor(String value) {
-		this.author = value;
+	public void setCode(String value) {
+		this.code = value;
 	}
-	public String getAuthor() {
-		return this.author;
+	public String getCode() {
+		return this.code;
 	}
-	public void setOrderNum(Integer value) {
-		this.orderNum = value;
+	public void setValue(String value) {
+		this.value = value;
 	}
-	public Integer getOrderNum() {
-		return this.orderNum;
-	}
-	public void setThumbnail(String value) {
-		this.thumbnail = value;
-	}
-	public String getThumbnail() {
-		return this.thumbnail;
-	}
-	public void setPath(String value) {
-		this.path = value;
-	}
-	public String getPath() {
-		return this.path;
-	}
-	public void setCreateTime(java.util.Date value) {
-		this.createTime = value;
-	}
-	public java.util.Date getCreateTime() {
-		return this.createTime;
+	public String getValue() {
+		return this.value;
 	}
 	public void setDescription(String value) {
 		this.description = value;
@@ -152,9 +116,9 @@ public class Photo {
 	}
 	
 	public boolean equals(Object obj) {
-		if(obj instanceof Photo == false) return false;
+		if(obj instanceof SystemConfig == false) return false;
 		if(this == obj) return true;
-		Photo other = (Photo)obj;
+		SystemConfig other = (SystemConfig)obj;
 		return new EqualsBuilder()
 			.append(getId(),other.getId())
 			.isEquals();

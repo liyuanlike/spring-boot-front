@@ -1,2 +1,2 @@
-# spring-boot-practice
-Spring Boot Best Practice
+# spring-boot-front
+spring-boot-front Best Practice

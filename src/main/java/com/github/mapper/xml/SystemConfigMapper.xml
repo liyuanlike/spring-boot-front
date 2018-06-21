@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.github.mapper.SystemConfigMapper">
+
+	<resultMap id="BaseResultMap" type="com.github.model.SystemConfig">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="code" column="code"/>
+        <result property="value" column="value"/>
+        <result property="description" column="description"/>
+	</resultMap>
+	
+	<!-- 用于select查询公用抽取的列 -->
+	<sql id="com.github.mapper.SystemConfigMapper.columns">
+	<![CDATA[
+		id, name, code, value, description
+	]]>
+	</sql>
+
+	<!-- useGeneratedKeys="true" keyProperty="xxx" for sqlserver and mysql -->
+	<insert id="add" useGeneratedKeys="true" keyProperty="id">
+    <![CDATA[
+        INSERT INTO t_system_config (
+        	id, 
+        	name, 
+        	code, 
+        	value, 
+        	description
+        ) VALUES (
+        	#{id}, 
+        	#{name}, 
+        	#{code}, 
+        	#{value}, 
+        	#{description}
+        )
+    ]]>
+	</insert>
+    
+	<update id="update" >
+    <![CDATA[
+        UPDATE t_system_config SET
+	        name = #{name}, 
+	        code = #{code}, 
+	        value = #{value}, 
+	        description = #{description}
+        WHERE 
+	        id = #{id} 
+    ]]>
+	</update>
+
+    <delete id="delete">
+    <![CDATA[
+        DELETE FROM t_system_config WHERE
+        id = #{id} 
+    ]]>
+    </delete>
+    
+    <select id="get" resultMap="BaseResultMap">
+		SELECT <include refid="com.github.mapper.SystemConfigMapper.columns" />
+	    <![CDATA[
+		    FROM t_system_config 
+	        WHERE 
+		        id = #{id} 
+	    ]]>
+	</select>
+
+	<select id="getList" resultMap="BaseResultMap">
+		SELECT <include refid="com.github.mapper.SystemConfigMapper.columns" /> FROM t_system_config
+	</select>
+
+	<select id="getSystemConfigList" resultMap="BaseResultMap">
+		SELECT <include refid="com.github.mapper.SystemConfigMapper.columns" /> FROM t_system_config
+        <where>
+            ...
+        </where>
+	</select>
+	<!--***************************************************************-->
+
+	<select id="getByCode" resultMap="BaseResultMap">
+		SELECT <include refid="com.github.mapper.SystemConfigMapper.columns" />
+		<![CDATA[
+	        FROM t_system_config
+	        WHERE
+		        code = #{code}
+	    ]]>
+	</select>
+	<select id="getListByCode" resultMap="BaseResultMap">
+		SELECT <include refid="com.github.mapper.SystemConfigMapper.columns" />
+		<![CDATA[
+	        FROM t_system_config
+	        WHERE
+		        code = #{code}
+	    ]]>
+	</select>
+	<select id="getListByCodePrefix" resultMap="BaseResultMap">
+		SELECT <include refid="com.github.mapper.SystemConfigMapper.columns" />
+		<![CDATA[
+	        FROM t_system_config
+	        WHERE
+		        code LIKE CONCAT(#prefix#, '%')
+	    ]]>
+	</select>
+
+</mapper>

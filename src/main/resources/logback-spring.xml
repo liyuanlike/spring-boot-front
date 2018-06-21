@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="false" scan="true" scanPeriod="600000">
+<configuration debug="FALSE" scan="FALSE" scanPeriod="600000">
 
     <springProperty scope="context" name="appName" source="spring.application.name"/>
 
@@ -14,6 +14,8 @@
     <property name="FILE_LOG_PATTERN" value="${FILE_LOG_PATTERN:-%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_LEVEL_PATTERN:-%5p} ${PID:- } --- [%t] %-40.40logger{39} : %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
 
 
+    <logger name="sun" level="INFO"/>
+    <logger name="java" level="INFO"/>
     <logger name="javax" level="INFO"/>
     <logger name="org.apache.tomcat" level="INFO"/>
     <logger name="org.apache.coyote" level="INFO"/>
@@ -22,11 +24,13 @@
     <logger name="org.thymeleaf.spring4.expression.SPELVariableExpressionEvaluator" level="DEBUG"/>
     <logger name="org.thymeleaf.TemplateEngine.CONFIG" level="INFO"/>
     <logger name="org.thymeleaf.TemplateEngine.TIMER" level="INFO"/>
-    <logger name="org.springframework.boot.autoconfigure" level="INFO"/>
+    <logger name="org.springframework.boot.autoconfigure" level="DEBUG"/>
+    <logger name="org.springframework.boot.autoconfigure.logging.AutoConfigurationReportLoggingInitializer" level="INFO"/>
     <logger name="org.springframework.boot.bind" level="INFO"/>
     <logger name="org.springframework.boot.context" level="INFO"/>
     <logger name="org.springframework.boot.web.filter" level="INFO"/>
 
+    <logger name="net.sf.ehcache.Cache" level="INFO"/>
     <logger name="net.sf.ehcache.config.ConfigurationHelper" level="INFO"/>
     <logger name="net.sf.ehcache.constructs.web.filter.Filter" level="INFO"/>
     <logger name="net.sf.ehcache.constructs.web.filter.GzipFilter" level="INFO"/>
@@ -49,6 +53,7 @@
     <logger name="org.apache.shiro.web.servlet.SimpleCookie" level="DEBUG"/>
     <logger name="org.mybatis.spring.SqlSessionFactoryBean" level="INFO"/>
     <logger name="org.mybatis.spring.SqlSessionUtils" level="INFO"/>
+    <logger name="org.mybatis.spring.mapper.ClassPathMapperScanner" level="DEBUG"/>
     <logger name="org.springframework.aop.aspectj.autoproxy.AspectJAwareAdvisorAutoProxyCreator" level="INFO"/>
     <logger name="org.springframework.aop.framework.autoproxy.BeanFactoryAdvisorRetrievalHelper" level="INFO"/>
     <logger name="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator" level="INFO"/>
@@ -56,8 +61,9 @@
     <logger name="org.springframework.aop.framework.Cglib2AopProxy" level="INFO"/>
     <logger name="org.springframework.aop.framework.CglibAopProxy" level="INFO"/>
     <logger name="org.springframework.aop.framework.JdkDynamicAopProxy" level="INFO"/>
+    <logger name="org.springframework.beans.AbstractNestablePropertyAccessor" level="DEBUG"/>
     <logger name="org.springframework.beans.CachedIntrospectionResults" level="INFO"/>
-    <logger name="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" level="INFO"/>
+    <logger name="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" level="DEBUG"/>
     <logger name="org.springframework.beans.factory.annotation.InjectionMetadata" level="INFO"/>
     <logger name="org.springframework.beans.factory.support.DefaultListableBeanFactory" level="INFO"/>
     <logger name="org.springframework.beans.factory.xml" level="INFO"/>
@@ -67,8 +73,9 @@
     <logger name="org.springframework.cache.annotation.AnnotationCacheOperationSource" level="INFO"/>
     <logger name="org.springframework.context.annotation.ConfigurationClassEnhancer" level="INFO"/>
     <logger name="org.springframework.context.annotation.ConfigurationClassPostProcessor" level="INFO"/>
-    <logger name="org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider" level="INFO"/>
     <logger name="org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader" level="INFO"/>
+    <logger name="org.springframework.context.annotation.ClassPathBeanDefinitionScanner" level="INFO"/>
+    <logger name="org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider" level="DEBUG"/>
     <logger name="org.springframework.context.event.EventListenerMethodProcessor" level="INFO"/>
     <logger name="org.springframework.core.env.PropertySourcesPropertyResolver" level="INFO"/>
     <logger name="org.springframework.core.env.StandardEnvironment" level="INFO"/>
@@ -108,6 +115,7 @@
 
 
     <logger name="com.github.mapper" level="INFO"/>
+    <logger name="com.moonsinfo" level="INFO"/>
 
     <!-- 控制台输出 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -138,7 +146,7 @@
         </filter>
     </appender>
 
-    <root level="DEBUG">
+    <root level="ALL">
         <appender-ref ref="CONSOLE"/>
     </root>
 </configuration>

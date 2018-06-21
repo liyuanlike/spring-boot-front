@@ -15,6 +15,7 @@
             <directory>src/main/resources</directory>
             <outputDirectory>${file.separator}</outputDirectory>
             <includes>
+                <include>area_data.json</include>
                 <include>*.xml</include>
                 <include>*.properties</include>
             </includes>

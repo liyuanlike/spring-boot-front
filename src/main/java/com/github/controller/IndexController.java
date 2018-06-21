@@ -20,6 +20,11 @@ public class IndexController {
 
 	@Resource private UserService userService;
 
+	@GetMapping("index")
+	public String index() {
+		return "index";
+	}
+
 	@GetMapping({"", "/"})
 	public String login() {
 		return "login";
@@ -46,11 +51,6 @@ public class IndexController {
 		}
 
 		return UrlBasedViewResolver.REDIRECT_URL_PREFIX + "/login";
-	}
-
-	@GetMapping("index")
-	public String index() {
-		return "index";
 	}
 
 }
