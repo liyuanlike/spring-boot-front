@@ -36,11 +36,14 @@
  */
 package com.github.service;
 
+import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import com.github.model.Photo;
 import com.github.mapper.PhotoMapper;
@@ -79,5 +82,11 @@ public class PhotoService {
         return this.photoMapper.getPhotoList(photo);
     }
     /* --------------------------------------------------- */
+
+    @Retryable(maxAttempts = Integer.MAX_VALUE, backoff = @Backoff(delay = 6 * 1000))
+    public String retry() {
+        System.err.println("retry method...: " + new Date());
+        throw new RuntimeException();
+    }
 }
 

@@ -50,4 +50,12 @@ public class TestController {
 		return photoList;
 	}
 
+	@ResponseBody
+	@GetMapping("retry")
+	public Object retry() {
+
+		photoService.retry();
+		return "success";
+	}
+
 }

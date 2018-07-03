@@ -20,17 +20,17 @@ public class IndexController {
 
 	@Resource private UserService userService;
 
-	@GetMapping("index")
+	@GetMapping({"", "/", "index"})
 	public String index() {
 		return "index";
 	}
 
-	@GetMapping({"", "/"})
+	@GetMapping("login")
 	public String login() {
 		return "login";
 	}
 
-	@PostMapping({"", "/"})
+	@PostMapping("login")
 	public String login(Model model) {
 		return "login";
 	}
