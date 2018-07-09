@@ -8,6 +8,10 @@ import com.alibaba.druid.wall.WallFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static com.alibaba.druid.filter.config.ConfigTools.decrypt;
+import static com.alibaba.druid.filter.config.ConfigTools.encrypt;
+import static com.alibaba.druid.filter.config.ConfigTools.genKeyPair;
+
 @Configuration
 public class DruidConfig {
 
@@ -51,6 +55,18 @@ public class DruidConfig {
 		wallFilter.setConfig(wallConfig);
 
 		return wallFilter;
+	}
+
+	/**
+	 * 加解密
+	 * */
+	public static void main(String[] args) throws Exception {
+		String password = "iMiracle";
+		String[] arr = genKeyPair(512);
+		System.out.println("privateKey:" + arr[0]);
+		System.out.println("publicKey:" + arr[1]);
+		System.out.println("password:" + encrypt(arr[0], password));
+		System.out.println("password:" + decrypt(arr[1], encrypt(arr[0], password)));
 	}
 }
 
