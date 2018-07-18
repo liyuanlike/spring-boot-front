@@ -23,6 +23,11 @@ public class TestController {
 	@GetMapping({"", "/"})
 	public Object index() {
 
+		if (true) {
+			throw new RuntimeException();
+		}
+
+
 		Photo photo = new Photo();
 		photo.setName("Baby");
 		photoService.add(photo);

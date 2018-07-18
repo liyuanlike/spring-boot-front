@@ -30,10 +30,8 @@ public class BeanConfig {
 	}
 	/* 支持fastjson */
 	@Bean
-	@ConditionalOnClass({FastJsonHttpMessageConverter.class})
-	public HttpMessageConverters fastJsonHttpMessageConverters(StringHttpMessageConverter stringHttpMessageConverter) {
-
-		FastJsonHttpMessageConverter fastJsonHttpMessageConverter = new FastJsonHttpMessageConverter();
+	@ConditionalOnClass(FastJsonConfig.class)
+	public FastJsonConfig fastJsonConfig() {
 		FastJsonConfig fastJsonConfig = new FastJsonConfig();
 		fastJsonConfig.setSerializerFeatures(
 				SerializerFeature.WriteMapNullValue,
@@ -45,7 +43,13 @@ public class BeanConfig {
 				SerializerFeature.DisableCircularReferenceDetect,
 				SerializerFeature.PrettyFormat
 		);
+		return fastJsonConfig;
+	}
+	@Bean
+	@ConditionalOnClass({FastJsonHttpMessageConverter.class})
+	public HttpMessageConverters fastJsonHttpMessageConverters(FastJsonConfig fastJsonConfig, StringHttpMessageConverter stringHttpMessageConverter) {
 
+		FastJsonHttpMessageConverter fastJsonHttpMessageConverter = new FastJsonHttpMessageConverter();
 		fastJsonHttpMessageConverter.setFastJsonConfig(fastJsonConfig);
 		fastJsonHttpMessageConverter.setSupportedMediaTypes(new ArrayList<MediaType>() {{
 			this.add(MediaType.APPLICATION_JSON);
