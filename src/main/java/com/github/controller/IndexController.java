@@ -35,7 +35,6 @@ public class IndexController {
 		return "login";
 	}
 
-
 	@GetMapping("logout")
 	public String logout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
 
