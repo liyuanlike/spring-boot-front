@@ -75,7 +75,7 @@ public class RestTemplateConfig {
 	@Bean
 	public RestTemplate restTemplate(RestTemplateBuilder builder, StringHttpMessageConverter stringHttpMessageConverter) {
 
-		RestTemplate restTemplate = builder.requestFactory(clientHttpRequestFactory()).build();
+		RestTemplate restTemplate = builder.requestFactory(this::clientHttpRequestFactory).build();
 		restTemplate.getMessageConverters().set(1, stringHttpMessageConverter);
 
 		return restTemplate;
