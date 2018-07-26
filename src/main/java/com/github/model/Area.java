@@ -43,7 +43,12 @@ import java.io.Serializable;
 
 public class Area implements Serializable {
 
+	/** 行政区划代码 */
 	private Integer code;
+	/** 行政区划名称 */
+	private String name;
+
+	/** 扩展信息: 省市区县 */
 	private String province;
 	private String city;
 	private String town;
@@ -55,8 +60,13 @@ public class Area implements Serializable {
 		this();
 		this.code = code;
 	}
-	public Area(Integer code, String province, String city, String town){
+	public Area(Integer code, String name){
 		this(code);
+		this.name = name;
+	}
+	public Area(Integer code, String name, String province, String city, String town){
+		this(code);
+		this.name = name;
 		this.province = province;
 		this.city = city;
 		this.town = town;
@@ -67,6 +77,12 @@ public class Area implements Serializable {
 	}
 	public void setCode(Integer code) {
 		this.code = code;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	public String getProvince() {
 		return province;
