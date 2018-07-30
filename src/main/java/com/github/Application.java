@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableRetry
 @EnableCaching
-@EnableScheduling
 @SpringBootApplication
 @EnableTransactionManagement
 public class Application {
