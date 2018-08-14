@@ -3,8 +3,10 @@ package com.github.util;
 import com.alibaba.fastjson.JSON;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
+import org.springframework.cglib.beans.BeanMap;
 import org.springframework.http.HttpStatus;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,7 +74,7 @@ public final class RestResponse {
 
 		return this;
 	}
-	
+
 	@Override
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this, ToStringStyle.SHORT_PREFIX_STYLE);

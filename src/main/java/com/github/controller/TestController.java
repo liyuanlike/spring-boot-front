@@ -3,6 +3,7 @@ package com.github.controller;
 import com.github.model.Photo;
 import com.github.pagehelper.PageHelper;
 import com.github.service.PhotoService;
+import com.github.util.RestResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,10 +24,10 @@ public class TestController {
 	@GetMapping({"", "/"})
 	public Object index() {
 
-		if (true) {
-			throw new RuntimeException();
-		}
 
+		if (true) {
+			throw new RuntimeException("成都市abc 123456");
+		}
 
 		Photo photo = new Photo();
 		photo.setName("Baby");
@@ -42,7 +43,7 @@ public class TestController {
 		photoService.delete(photo.getId());
 		photoService.get(photo.getId());
 
-		return "success";
+		return RestResponse.ok();
 	}
 
 	@ResponseBody

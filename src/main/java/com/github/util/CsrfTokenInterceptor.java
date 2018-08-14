@@ -19,44 +19,48 @@ public class CsrfTokenInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-		HandlerMethod handlerMethod = (HandlerMethod) handler;
-		Method method = handlerMethod.getMethod();
-		CsrfToken annotation = method.getAnnotation(CsrfToken.class);
+		if (handler instanceof HandlerMethod) {
 
-		if (annotation != null) {
+			HandlerMethod handlerMethod = (HandlerMethod) handler;
+			Method method = handlerMethod.getMethod();
+			CsrfToken annotation = method.getAnnotation(CsrfToken.class);
 
-			String sessionId = request.getRequestedSessionId();
-			boolean remove = annotation.remove();
-			if (remove) {
-				String clientToken = request.getParameter(CsrfToken.NAME);
-				boolean check = csrfTokenService.check(sessionId, clientToken);
-				if (!check) {
-					response.sendRedirect("/unauthorize");
-					return false;
+			if (annotation != null) {
+
+				String sessionId = request.getRequestedSessionId();
+				boolean remove = annotation.remove();
+				if (remove) {
+					String clientToken = request.getParameter(CsrfToken.NAME);
+					boolean check = csrfTokenService.check(sessionId, clientToken);
+					if (!check) {
+						response.sendRedirect("/unauthorize");
+						return false;
+					}
 				}
 			}
 		}
-
 		return true;
 	}
 
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 
-		HandlerMethod handlerMethod = (HandlerMethod) handler;
-		Method method = handlerMethod.getMethod();
-		CsrfToken annotation = method.getAnnotation(CsrfToken.class);
+		if (handler instanceof HandlerMethod) {
 
-		if (annotation != null) {
+			HandlerMethod handlerMethod = (HandlerMethod) handler;
+			Method method = handlerMethod.getMethod();
+			CsrfToken annotation = method.getAnnotation(CsrfToken.class);
 
-			String sessionId = request.getRequestedSessionId();
-			boolean create = annotation.create();
-			if (create) {
-				String fromToken = csrfTokenService.create(sessionId);
-				modelAndView.addObject(CsrfToken.NAME, fromToken);
+			if (annotation != null) {
+
+				String sessionId = request.getRequestedSessionId();
+				boolean create = annotation.create();
+				if (create) {
+					String fromToken = csrfTokenService.create(sessionId);
+					modelAndView.addObject(CsrfToken.NAME, fromToken);
+				}
 			}
 		}
-
 	}
 
 	@Override
