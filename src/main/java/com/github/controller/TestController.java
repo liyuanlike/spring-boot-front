@@ -3,6 +3,8 @@ package com.github.controller;
 import com.github.model.Photo;
 import com.github.pagehelper.PageHelper;
 import com.github.service.PhotoService;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +19,8 @@ import java.util.List;
 public class TestController {
 
 	@Resource private PhotoService photoService;
+	@Resource private TaskExecutor taskExecutor;
+//	@Resource private TaskScheduler taskScheduler;
 
 
 	@ResponseBody
@@ -24,9 +28,18 @@ public class TestController {
 	public Object index() {
 
 		if (true) {
-			throw new RuntimeException();
+//			throw new RuntimeException();
 		}
 
+		taskExecutor.execute(new Runnable() {
+			@Override
+			public void run() {
+				System.err.println("execute...");
+			}
+		});
+
+		System.err.println(taskExecutor);
+		photoService.async();
 
 		Photo photo = new Photo();
 		photo.setName("Baby");

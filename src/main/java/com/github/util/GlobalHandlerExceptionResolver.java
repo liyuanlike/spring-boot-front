@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.Annotation;
 
-//@Component
+@Component
 public class GlobalHandlerExceptionResolver implements HandlerExceptionResolver {
 
 	@Resource private FastJsonConfig fastJsonConfig;
@@ -32,9 +32,11 @@ public class GlobalHandlerExceptionResolver implements HandlerExceptionResolver 
 			FastJsonJsonView fastJsonJsonView = new FastJsonJsonView();
 			fastJsonJsonView.setFastJsonConfig(fastJsonConfig);
 
-			System.err.println(response.getStatus());
+			RestResponse restResponse = RestResponse.error();
+			restResponse.setDescription(ex.getMessage());
+
 			modelAndView = new ModelAndView(fastJsonJsonView);
-			modelAndView.addObject("success");
+			modelAndView.addObject(restResponse);
 		}
 
 		return modelAndView;

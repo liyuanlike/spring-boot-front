@@ -38,12 +38,14 @@ package com.github.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import javax.annotation.Resource;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import com.github.model.Photo;
 import com.github.mapper.PhotoMapper;
@@ -87,6 +89,15 @@ public class PhotoService {
     public String retry() {
         System.err.println("retry method...: " + new Date());
         throw new RuntimeException();
+    }
+
+    @Async
+    public void async() {
+        System.err.println("@Async...");
+        for (int i = 0; i < 10; i++) {
+            this.get(i);
+        }
+        System.err.println("@Async done.");
     }
 }
 
