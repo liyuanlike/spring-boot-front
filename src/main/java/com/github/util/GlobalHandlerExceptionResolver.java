@@ -31,6 +31,7 @@ public class GlobalHandlerExceptionResolver implements HandlerExceptionResolver 
 		if (responseBodyAnnotation != null || restControllerAnnotation != null) {
 			FastJsonJsonView fastJsonJsonView = new FastJsonJsonView();
 			fastJsonJsonView.setFastJsonConfig(fastJsonConfig);
+			fastJsonJsonView.setExtractValueFromSingleKeyModel(true);
 
 			RestResponse restResponse = RestResponse.error();
 			restResponse.setDescription(ex.getMessage());

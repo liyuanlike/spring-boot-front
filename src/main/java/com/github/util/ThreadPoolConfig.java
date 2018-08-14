@@ -25,7 +25,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class ThreadPoolConfig implements AsyncConfigurer {
 
 	private final Timer timer = new Timer();
-	private static final long MONITOR_RUNNING_PERIOD = 6 * 1000L;
+	private static final long MONITOR_RUNNING_PERIOD = 30 * 1000L;
 
 	@Override
 	public Executor getAsyncExecutor() {
@@ -76,7 +76,7 @@ public class ThreadPoolConfig implements AsyncConfigurer {
 			this.executor = executor;
 		}
 		public void run() {
-			logger.info(String
+			logger.debug(String
 					.format("[%s monitor] [%d/%d] Active: %d, Completed: %d, Task: %d, isShutdown: %s, isTerminated: %s, Queue.size: %d",
 							this.name,
 							this.executor.getPoolSize(), this.executor.getCorePoolSize(),
