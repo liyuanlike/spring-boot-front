@@ -29,14 +29,15 @@ public class ThreadPoolConfig implements AsyncConfigurer {
 
 	@Override
 	public Executor getAsyncExecutor() {
-		ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
-		taskScheduler.setPoolSize(Runtime.getRuntime().availableProcessors());
-		taskScheduler.setAwaitTerminationSeconds(60 * 60);
-		taskScheduler.setThreadNamePrefix("executor-");
-		taskScheduler.setWaitForTasksToCompleteOnShutdown(true);
-		taskScheduler.initialize();
-		timer.scheduleAtFixedRate(new ThreadPoolMonitor("getAsyncExecutor", taskScheduler.getScheduledThreadPoolExecutor()), MONITOR_RUNNING_PERIOD, MONITOR_RUNNING_PERIOD);
-		return taskScheduler;
+		ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
+		taskExecutor.setCorePoolSize(Runtime.getRuntime().availableProcessors());
+		taskExecutor.setMaxPoolSize(32);
+		taskExecutor.setAwaitTerminationSeconds(60 * 60);
+		taskExecutor.setThreadNamePrefix("executor-");
+		taskExecutor.setWaitForTasksToCompleteOnShutdown(true);
+		taskExecutor.initialize();
+		timer.scheduleAtFixedRate(new ThreadPoolMonitor("executor", taskExecutor.getThreadPoolExecutor()), MONITOR_RUNNING_PERIOD, MONITOR_RUNNING_PERIOD);
+		return taskExecutor;
 	}
 
 	@Bean
