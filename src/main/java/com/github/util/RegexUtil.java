@@ -50,8 +50,14 @@ public class RegexUtil {
 	/**
 	 * 域名匹配
 	 */
-	public static String getMatchDomainName(CharSequence input) {
+	public static String getDomainName(CharSequence input) {
 		return getMatchContent("http[s]?://[^/]+/", input);
+	}
+	/**
+	 * Ip匹配
+	 */
+	public static String getIp(CharSequence input) {
+		return getMatchContent("((25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.){3}(25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))", input);
 	}
 	/**
 	 * 判断是否包含域名
