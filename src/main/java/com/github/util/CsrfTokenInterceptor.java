@@ -56,8 +56,8 @@ public class CsrfTokenInterceptor implements HandlerInterceptor {
 				String sessionId = request.getRequestedSessionId();
 				boolean create = annotation.create();
 				if (create) {
-					String fromToken = csrfTokenService.create(sessionId);
-					modelAndView.addObject(CsrfToken.NAME, fromToken);
+					String csrfToken = csrfTokenService.create(sessionId);
+					modelAndView.addObject(CsrfToken.NAME, csrfToken);
 				}
 			}
 		}

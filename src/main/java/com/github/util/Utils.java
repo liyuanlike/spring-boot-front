@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -68,12 +69,23 @@ public final class Utils {
 	    if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
 	        ip = request.getRemoteAddr();
 	    }
+
+		// 如果是多级代理，那么取第一个ip为客户端ip
+		if (ip != null && ip.indexOf(",") != -1) {
+			ip = ip.substring(0, ip.indexOf(",")).trim();
+		}
+
 	    return ip;
 	}
 	
 	public static final boolean isWechat(HttpServletRequest request) {
 		String userAgent = request.getHeader("user-agent");
 		return userAgent.contains("MicroMessenger");
+	}
+
+	public static boolean isAjaxRequest(WebRequest webRequest) {
+		String requestedWith = webRequest.getHeader("X-Requested-With");
+		return requestedWith != null ? "XMLHttpRequest".equals(requestedWith) : false;
 	}
 	
 	/** 获取当前月第一天 */

@@ -35,7 +35,7 @@ public final class RestResponse {
 
 	public RestResponse(Integer code) {
 		this.status = HttpStatus.OK.value();
-		this.code = CODE_OK;
+		this.code = code;
 		this.message = messageMap.get(code);
 	}
 
@@ -46,10 +46,10 @@ public final class RestResponse {
 		this.message = messageMap.get(CODE_OK);
 	}
 
-	public RestResponse(HttpStatus httpStatus, Integer code, String message, Object data, String description) {
+	public RestResponse(HttpStatus httpStatus, Integer code, Object data, String description) {
 		this.status = httpStatus.value();
-		this.code = CODE_OK;
-		this.message = messageMap.get(CODE_OK);
+		this.code = code;
+		this.message = messageMap.get(code);
 		this.data = data;
 		this.description = description;
 	}
