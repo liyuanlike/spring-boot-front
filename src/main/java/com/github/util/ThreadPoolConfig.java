@@ -9,8 +9,10 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -22,7 +24,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @EnableAsync
 @Configuration
 @EnableScheduling
-public class ThreadPoolConfig implements AsyncConfigurer {
+public class ThreadPoolConfig implements AsyncConfigurer, SchedulingConfigurer {
 
 	private final Timer timer = new Timer();
 	private static final long MONITOR_RUNNING_PERIOD = 30 * 1000L;
@@ -63,6 +65,12 @@ public class ThreadPoolConfig implements AsyncConfigurer {
 		taskScheduler.initialize();
 		timer.scheduleAtFixedRate(new ThreadPoolMonitor("taskScheduler", taskScheduler.getScheduledThreadPoolExecutor()), MONITOR_RUNNING_PERIOD, MONITOR_RUNNING_PERIOD);
 		return taskScheduler;
+	}
+
+
+	@Override
+	public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+		taskRegistrar.setScheduler(taskScheduler());
 	}
 
 	static class ThreadPoolMonitor extends TimerTask {
