@@ -10,11 +10,9 @@ import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
-import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -26,51 +24,37 @@ import java.util.concurrent.ThreadPoolExecutor;
 @EnableScheduling
 public class ThreadPoolConfig implements AsyncConfigurer, SchedulingConfigurer {
 
-	private final Timer timer = new Timer();
-	private static final long MONITOR_RUNNING_PERIOD = 30 * 1000L;
+	private static final long MONITOR_RUNNING_PERIOD = 5 * 1000L;
+	private static ThreadPoolTaskScheduler taskScheduler = null;
+	static {
+		taskScheduler = new ThreadPoolTaskScheduler();
+		taskScheduler.setPoolSize(Runtime.getRuntime().availableProcessors());
+		taskScheduler.setAwaitTerminationSeconds(60 * 60);
+		taskScheduler.setThreadNamePrefix("executor-");
+		taskScheduler.setWaitForTasksToCompleteOnShutdown(true);
+		taskScheduler.initialize();
+		taskScheduler.scheduleAtFixedRate(new ThreadPoolMonitor("taskScheduler monitor", taskScheduler.getScheduledThreadPoolExecutor()), MONITOR_RUNNING_PERIOD);
+	}
+
 
 	@Override
 	public Executor getAsyncExecutor() {
-		ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
-		taskExecutor.setCorePoolSize(Runtime.getRuntime().availableProcessors());
-		taskExecutor.setMaxPoolSize(32);
-		taskExecutor.setAwaitTerminationSeconds(60 * 60);
-		taskExecutor.setThreadNamePrefix("executor-");
-		taskExecutor.setWaitForTasksToCompleteOnShutdown(true);
-		taskExecutor.initialize();
-		timer.scheduleAtFixedRate(new ThreadPoolMonitor("executor", taskExecutor.getThreadPoolExecutor()), MONITOR_RUNNING_PERIOD, MONITOR_RUNNING_PERIOD);
-		return taskExecutor;
+		return taskScheduler;
 	}
 
 	@Bean
 	public TaskExecutor taskExecutor() {
-		ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
-		taskExecutor.setCorePoolSize(Runtime.getRuntime().availableProcessors());
-		taskExecutor.setMaxPoolSize(32);
-		taskExecutor.setAwaitTerminationSeconds(60 * 60);
-		taskExecutor.setThreadNamePrefix("taskExecutor-");
-		taskExecutor.setWaitForTasksToCompleteOnShutdown(true);
-		taskExecutor.initialize();
-		timer.scheduleAtFixedRate(new ThreadPoolMonitor("taskExecutor", taskExecutor.getThreadPoolExecutor()), MONITOR_RUNNING_PERIOD, MONITOR_RUNNING_PERIOD);
-		return taskExecutor;
+		return taskScheduler;
 	}
 
 	@Bean
 	public TaskScheduler taskScheduler() {
-		ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
-		taskScheduler.setPoolSize(Runtime.getRuntime().availableProcessors());
-		taskScheduler.setAwaitTerminationSeconds(60 * 60);
-		taskScheduler.setThreadNamePrefix("taskScheduler-");
-		taskScheduler.setWaitForTasksToCompleteOnShutdown(true);
-		taskScheduler.initialize();
-		timer.scheduleAtFixedRate(new ThreadPoolMonitor("taskScheduler", taskScheduler.getScheduledThreadPoolExecutor()), MONITOR_RUNNING_PERIOD, MONITOR_RUNNING_PERIOD);
 		return taskScheduler;
 	}
 
-
 	@Override
 	public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-		taskRegistrar.setScheduler(taskScheduler());
+		taskRegistrar.setScheduler(taskScheduler);
 	}
 
 	static class ThreadPoolMonitor extends TimerTask {
