@@ -2,6 +2,8 @@ package com.github.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
@@ -22,11 +24,13 @@ import java.util.concurrent.ThreadPoolExecutor;
 @EnableAsync
 @Configuration
 @EnableScheduling
-public class ThreadPoolConfig implements AsyncConfigurer, SchedulingConfigurer {
+public class ThreadPoolConfig implements AsyncConfigurer, SchedulingConfigurer, InitializingBean, DisposableBean {
 
-	private static final long MONITOR_RUNNING_PERIOD = 5 * 1000L;
+	private static final long MONITOR_RUNNING_PERIOD = 30 * 1000L;
 	private static ThreadPoolTaskScheduler taskScheduler = null;
-	static {
+
+	@Override
+	public void afterPropertiesSet() {
 		taskScheduler = new ThreadPoolTaskScheduler();
 		taskScheduler.setPoolSize(Runtime.getRuntime().availableProcessors());
 		taskScheduler.setAwaitTerminationSeconds(60 * 60);
@@ -34,8 +38,12 @@ public class ThreadPoolConfig implements AsyncConfigurer, SchedulingConfigurer {
 		taskScheduler.setWaitForTasksToCompleteOnShutdown(true);
 		taskScheduler.initialize();
 		taskScheduler.scheduleAtFixedRate(new ThreadPoolMonitor("taskScheduler monitor", taskScheduler.getScheduledThreadPoolExecutor()), MONITOR_RUNNING_PERIOD);
-	}
 
+	}
+	@Override
+	public void destroy() {
+		taskScheduler.shutdown();
+	}
 
 	@Override
 	public Executor getAsyncExecutor() {
