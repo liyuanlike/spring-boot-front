@@ -32,7 +32,7 @@ public class ThreadPoolConfig extends AsyncConfigurerSupport implements Scheduli
 	@Override
 	public void afterPropertiesSet() {
 		taskScheduler = new ThreadPoolTaskScheduler();
-		taskScheduler.setPoolSize(Runtime.getRuntime().availableProcessors());
+		taskScheduler.setPoolSize(Runtime.getRuntime().availableProcessors() * 2);
 		taskScheduler.setAwaitTerminationSeconds(60 * 60);
 		taskScheduler.setThreadNamePrefix("executor-");
 		taskScheduler.setWaitForTasksToCompleteOnShutdown(true);
@@ -70,15 +70,15 @@ public class ThreadPoolConfig extends AsyncConfigurerSupport implements Scheduli
 	public Object threadPoolMonitor() {
 		return new Object() {
 			ScheduledThreadPoolExecutor executor = taskScheduler.getScheduledThreadPoolExecutor();
-			private static final String MONITOR_MESSAGE = "[%s monitor] [%d/%d] Active: %d, Completed: %d, Task: %d, isShutdown: %s, isTerminated: %s, Queue.size: %d";
+			private static final String MONITOR_MESSAGE = "[%s monitor] [%d/%d] Active: %d, Completed: %d, Task: %d, Queue.size: %d, isShutdown: %s, isTerminated: %s";
 			@Scheduled(fixedDelay = 30 * 1000)
 			public void run() {
 				String message = String.format(MONITOR_MESSAGE,
 						"executor",
 						executor.getPoolSize(), executor.getCorePoolSize(),
 						executor.getActiveCount(), executor.getCompletedTaskCount(),
-						executor.getTaskCount(), executor.isShutdown(),
-						executor.isTerminated(), executor.getQueue().size());
+						executor.getTaskCount(), executor.getQueue().size(),
+						executor.isShutdown(), executor.isTerminated());
 				logger.debug(message);
 			}
 		};
