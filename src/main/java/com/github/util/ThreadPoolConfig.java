@@ -15,7 +15,6 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
-import java.util.TimerTask;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -37,8 +36,7 @@ public class ThreadPoolConfig implements AsyncConfigurer, SchedulingConfigurer, 
 		taskScheduler.setThreadNamePrefix("executor-");
 		taskScheduler.setWaitForTasksToCompleteOnShutdown(true);
 		taskScheduler.initialize();
-		taskScheduler.scheduleAtFixedRate(new ThreadPoolMonitor("taskScheduler monitor", taskScheduler.getScheduledThreadPoolExecutor()), MONITOR_RUNNING_PERIOD);
-
+		taskScheduler.scheduleWithFixedDelay(new ThreadPoolMonitor("taskScheduler"), MONITOR_RUNNING_PERIOD);
 	}
 	@Override
 	public void destroy() {
@@ -51,10 +49,13 @@ public class ThreadPoolConfig implements AsyncConfigurer, SchedulingConfigurer, 
 	}
 
 	@Bean
+	public Executor executor() {
+		return taskScheduler;
+	}
+	@Bean
 	public TaskExecutor taskExecutor() {
 		return taskScheduler;
 	}
-
 	@Bean
 	public TaskScheduler taskScheduler() {
 		return taskScheduler;
@@ -65,27 +66,29 @@ public class ThreadPoolConfig implements AsyncConfigurer, SchedulingConfigurer, 
 		taskRegistrar.setScheduler(taskScheduler);
 	}
 
-	static class ThreadPoolMonitor extends TimerTask {
+	static class ThreadPoolMonitor implements Runnable {
 
 		private String name;
 		private ThreadPoolExecutor executor;
 		private final Logger logger = LoggerFactory.getLogger(this.getClass());
+		private static final String MONITOR_MESSAGE = "[%s monitor] [%d/%d] Active: %d, Completed: %d, Task: %d, isShutdown: %s, isTerminated: %s, Queue.size: %d";
 
-		public ThreadPoolMonitor(String name, ThreadPoolExecutor executor) {
+		public ThreadPoolMonitor(String name) {
 			this.name = name;
-			this.executor = executor;
+			this.executor = taskScheduler.getScheduledThreadPoolExecutor();
 		}
+
+		@Override
 		public void run() {
-			logger.debug(String
-					.format("[%s monitor] [%d/%d] Active: %d, Completed: %d, Task: %d, isShutdown: %s, isTerminated: %s, Queue.size: %d",
+			String message = String.format(MONITOR_MESSAGE,
 							this.name,
 							this.executor.getPoolSize(), this.executor.getCorePoolSize(),
 							this.executor.getActiveCount(), this.executor.getCompletedTaskCount(),
 							this.executor.getTaskCount(), this.executor.isShutdown(),
-							this.executor.isTerminated(), this.executor.getQueue().size()));
+							this.executor.isTerminated(), this.executor.getQueue().size());
+			logger.debug(message);
 		}
 	}
-
 
 }
 
