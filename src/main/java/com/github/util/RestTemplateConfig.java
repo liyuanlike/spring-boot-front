@@ -55,6 +55,7 @@ public class RestTemplateConfig {
 						SSLContext sslContext = SSLContext.getInstance("SSL", "SunJSSE");
 						sslContext.init(null, trustManagers, new SecureRandom());
 						httpsConnection.setSSLSocketFactory(sslContext.getSocketFactory());
+						httpsConnection.setHostnameVerifier((hostname, session) -> true);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

@@ -26,7 +26,9 @@ public class BeanConfig {
 
 	@Bean
 	public StringHttpMessageConverter stringHttpMessageConverter() {
-		return new StringHttpMessageConverter(StandardCharsets.UTF_8);
+		StringHttpMessageConverter stringHttpMessageConverter = new StringHttpMessageConverter(StandardCharsets.UTF_8);
+		stringHttpMessageConverter.setWriteAcceptCharset(false); // 防止Accept-Charset太大一长串
+		return stringHttpMessageConverter;
 	}
 	/* 支持fastjson */
 	@Bean
