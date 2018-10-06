@@ -19,17 +19,14 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.scheduling.annotation.Scheduled;
 
-import javax.annotation.Resource;
-import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 @Configuration
-public class HttpClientConfig implements InitializingBean {
+public class HttpClientConfig {
 
 
 	// Determines the timeout in milliseconds until a connection is established.
@@ -43,10 +40,10 @@ public class HttpClientConfig implements InitializingBean {
 
 	private static final int MAX_TOTAL_CONNECTIONS = 128;
 	private static final int DEFAULT_KEEP_ALIVE_TIME_MILLIS = 20 * 1000;
-	private static final int CLOSE_IDLE_CONNECTION_WAIT_TIME_SECS = 30;
+	private static final int CLOSE_IDLE_CONNECTION_WAIT_TIME = 30 * 60 * 1000;
 
-	@Resource private ThreadPoolTaskScheduler taskScheduler;
 	private static PoolingHttpClientConnectionManager connectionManager = null;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
 	@Bean
@@ -107,26 +104,21 @@ public class HttpClientConfig implements InitializingBean {
 		};
 	}
 
-	@Override
-	public void afterPropertiesSet() {
-		taskScheduler.scheduleWithFixedDelay(new IdleConnectionMonitor(), Duration.ofMinutes(CLOSE_IDLE_CONNECTION_WAIT_TIME_SECS));
-	}
 
-	static class IdleConnectionMonitor implements Runnable {
-
-		private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-		public IdleConnectionMonitor() {
-		}
-		public void run() {
-			if (connectionManager != null) {
-				logger.trace("run IdleConnectionMonitor - Closing expired and idle connections...");
-				connectionManager.closeExpiredConnections();
-				connectionManager.closeIdleConnections(CLOSE_IDLE_CONNECTION_WAIT_TIME_SECS, TimeUnit.MINUTES);
-			} else {
-				logger.trace("run IdleConnectionMonitor - Http Client Connection manager is not initialised");
+	@Bean
+	public Object idleConnectionMonitor() {
+		return new Object() {
+			@Scheduled(fixedDelay = 30 * 60 * 1000)
+			public void run() {
+				if (connectionManager != null) {
+					logger.trace("run IdleConnectionMonitor - Closing expired and idle connections...");
+					connectionManager.closeExpiredConnections();
+					connectionManager.closeIdleConnections(CLOSE_IDLE_CONNECTION_WAIT_TIME, TimeUnit.MILLISECONDS);
+				} else {
+					logger.trace("run IdleConnectionMonitor - Http Client Connection manager is not initialised");
+				}
 			}
-		}
+		};
 	}
 
 }

@@ -4,17 +4,35 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class JobService {
 
-	@Scheduled(cron = "*/1 * * * * ? ")   //每4秒执行一次
-	public void testCr2on4() {
-		System.err.println(Thread.currentThread().toString() + " : " + new Date());
+	private static AtomicInteger count = new AtomicInteger(0);
+
+	@Scheduled(cron = "0/1 * * * * ? ")
+	public void t1() {
+		System.err.println(Thread.currentThread().toString() + " : " + count.incrementAndGet()  + " : " + new Date());
 	}
 
-	@Scheduled(cron = "*/1 * * * * ? ")   //每4秒执行一次
-	public void testCr3o1n4() {
-		System.err.println(Thread.currentThread().toString() + " : " + new Date());
+	@Scheduled(cron = "0/1 * * * * ? ")
+	public void t2() {
+		System.err.println(Thread.currentThread().toString() + " : " + count.incrementAndGet() + " : " + new Date());
+	}
+
+	@Scheduled(cron = "0/1 * * * * ? ")
+	public void t3() {
+		System.err.println(Thread.currentThread().toString() + " : " + count.incrementAndGet() + " : " + new Date());
+	}
+
+	@Scheduled(cron = "0/1 * * * * ? ")
+	public void t4() {
+		System.err.println(Thread.currentThread().toString() + " : " + count.incrementAndGet() + " : " + new Date());
+	}
+
+	@Scheduled(cron = "0/1 * * * * ? ")
+	public void t5() {
+		System.err.println(Thread.currentThread().toString() + " : " + count.incrementAndGet() + " : " + new Date());
 	}
 }

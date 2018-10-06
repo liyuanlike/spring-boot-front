@@ -8,25 +8,26 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.annotation.AsyncConfigurer;
+import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
 import java.util.concurrent.Executor;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 
 /** Bean配置管理 */
 @EnableAsync
 @Configuration
 @EnableScheduling
-public class ThreadPoolConfig implements AsyncConfigurer, SchedulingConfigurer, InitializingBean, DisposableBean {
+public class ThreadPoolConfig extends AsyncConfigurerSupport implements SchedulingConfigurer, InitializingBean, DisposableBean {
 
-	private static final long MONITOR_RUNNING_PERIOD = 30 * 1000L;
 	private static ThreadPoolTaskScheduler taskScheduler = null;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	public void afterPropertiesSet() {
@@ -36,7 +37,6 @@ public class ThreadPoolConfig implements AsyncConfigurer, SchedulingConfigurer, 
 		taskScheduler.setThreadNamePrefix("executor-");
 		taskScheduler.setWaitForTasksToCompleteOnShutdown(true);
 		taskScheduler.initialize();
-		taskScheduler.scheduleWithFixedDelay(new ThreadPoolMonitor("taskScheduler"), MONITOR_RUNNING_PERIOD);
 	}
 	@Override
 	public void destroy() {
@@ -66,28 +66,22 @@ public class ThreadPoolConfig implements AsyncConfigurer, SchedulingConfigurer, 
 		taskRegistrar.setScheduler(taskScheduler);
 	}
 
-	static class ThreadPoolMonitor implements Runnable {
-
-		private String name;
-		private ThreadPoolExecutor executor;
-		private final Logger logger = LoggerFactory.getLogger(this.getClass());
-		private static final String MONITOR_MESSAGE = "[%s monitor] [%d/%d] Active: %d, Completed: %d, Task: %d, isShutdown: %s, isTerminated: %s, Queue.size: %d";
-
-		public ThreadPoolMonitor(String name) {
-			this.name = name;
-			this.executor = taskScheduler.getScheduledThreadPoolExecutor();
-		}
-
-		@Override
-		public void run() {
-			String message = String.format(MONITOR_MESSAGE,
-							this.name,
-							this.executor.getPoolSize(), this.executor.getCorePoolSize(),
-							this.executor.getActiveCount(), this.executor.getCompletedTaskCount(),
-							this.executor.getTaskCount(), this.executor.isShutdown(),
-							this.executor.isTerminated(), this.executor.getQueue().size());
-			logger.debug(message);
-		}
+	@Bean
+	public Object threadPoolMonitor() {
+		return new Object() {
+			ScheduledThreadPoolExecutor executor = taskScheduler.getScheduledThreadPoolExecutor();
+			private static final String MONITOR_MESSAGE = "[%s monitor] [%d/%d] Active: %d, Completed: %d, Task: %d, isShutdown: %s, isTerminated: %s, Queue.size: %d";
+			@Scheduled(fixedDelay = 30 * 1000)
+			public void run() {
+				String message = String.format(MONITOR_MESSAGE,
+						"executor",
+						executor.getPoolSize(), executor.getCorePoolSize(),
+						executor.getActiveCount(), executor.getCompletedTaskCount(),
+						executor.getTaskCount(), executor.isShutdown(),
+						executor.isTerminated(), executor.getQueue().size());
+				logger.debug(message);
+			}
+		};
 	}
 
 }
