@@ -79,7 +79,7 @@ public class ThreadPoolConfig extends AsyncConfigurerSupport implements Scheduli
 						executor.getActiveCount(), executor.getCompletedTaskCount(),
 						executor.getTaskCount(), executor.getQueue().size(),
 						executor.isShutdown(), executor.isTerminated());
-				logger.debug(message);
+				logger.info(message);
 			}
 		};
 	}
