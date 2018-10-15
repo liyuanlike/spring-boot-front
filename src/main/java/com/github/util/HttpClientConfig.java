@@ -84,7 +84,7 @@ public class HttpClientConfig {
 		poolingConnectionManager.setMaxTotal(MAX_TOTAL_CONNECTIONS); // 设置整个连接池最大连接数 根据自己的场景决定
 		poolingConnectionManager.setDefaultMaxPerRoute(2 * MAX_TOTAL_CONNECTIONS); // 路由是对maxTotal的细分
 
-		this.connectionManager = poolingConnectionManager;
+		connectionManager = poolingConnectionManager;
 		return poolingConnectionManager;
 	}
 
